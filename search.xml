@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>art-template模板引擎</title>
+    <url>/2022/06/10/art-template%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E/</url>
+    <content><![CDATA[<h3 id="art-template安装"><a href="#art-template安装" class="headerlink" title="art-template安装"></a>art-template安装</h3><p>在浏览器中访问<a href="http://aui.github.io/art-template/zh-cn/docs/installation.html">http://aui.github.io/art-template/zh-cn/docs/installation.html</a> 页面，找到下载链接后，鼠标右键，选择“<strong>链接另存为</strong>”，将 art-template 下载到本地，然后，通过 script标签加载到网页上进行使用</p>
+<span id="more"></span>
+
+<p><img src="/./images/images1.png"></p>
+<h3 id="art-template的使用步骤"><a href="#art-template的使用步骤" class="headerlink" title="art-template的使用步骤"></a>art-template的使用步骤</h3><ol>
+<li>导入 art-template</li>
+<li>定义数据</li>
+<li>定义模板</li>
+<li>调用 art-template</li>
+<li>渲染 HTML 结构</li>
+</ol>
+<h3 id="art-template标准语法"><a href="#art-template标准语法" class="headerlink" title="art-template标准语法"></a>art-template标准语法</h3><ul>
+<li><h5 id="标准语法-输出"><a href="#标准语法-输出" class="headerlink" title="标准语法-输出"></a>标准语法-输出</h5></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;&#123;value&#125;&#125;</span><br><span class="line">&#123;&#123;obj.<span class="property">key</span>&#125;&#125;</span><br><span class="line">&#123;&#123;obj[<span class="string">&#x27;key&#x27;</span>]&#125;&#125;</span><br><span class="line">&#123;&#123;a ? b : c&#125;&#125;</span><br><span class="line">&#123;&#123;a || b&#125;&#125;</span><br><span class="line">&#123;&#123;a + b&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​     在 语法中，可以进行<strong>变量</strong>的输出、<strong>对象属性</strong>的输出、<strong>三元表达式</strong>输出、<strong>逻辑或</strong>输出、<strong>加减乘除等表达式</strong>输出</p>
+<ul>
+<li><h5 id="标准语法-原文输出"><a href="#标准语法-原文输出" class="headerlink" title="标准语法-原文输出"></a>标准语法-原文输出</h5></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;&#123;@ value&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​		如果要输出的 value 值中，包含了 HTML 标签结构，则需要使用<strong>原文输出</strong>语法，才能保证 HTML 标签被正常渲染</p>
+<ul>
+<li><h5 id="标准语法-条件输出"><a href="#标准语法-条件输出" class="headerlink" title="标准语法-条件输出"></a>标准语法-条件输出</h5></li>
+</ul>
+<p>​		如果要实现条件输出，则可以使用 <strong>if</strong> … <strong>else if</strong> … <strong>&#x2F;if</strong> 的方式，进行按需输出</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;&#123;<span class="keyword">if</span> value&#125;&#125; 按需输出的内容 &#123;&#123;/<span class="keyword">if</span>&#125;&#125;</span><br><span class="line">&#123;&#123;<span class="keyword">if</span> v1&#125;&#125; 按需输出的内容 &#123;&#123;<span class="keyword">else</span> <span class="keyword">if</span> v2&#125;&#125;  按需输出的内容 &#123;&#123;/<span class="keyword">if</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h5 id="标准语法-循环输出"><a href="#标准语法-循环输出" class="headerlink" title="标准语法-循环输出"></a>标准语法-循环输出</h5></li>
+</ul>
+<p>​		如果要实现循环输出，则可以通过 each 语法循环数组，当前循环的索引使用 <strong>$index</strong> 进行访问，当前的循环项使用 <strong>$value</strong> 进行访问</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;&#123;each arr&#125;&#125;</span><br><span class="line">	&#123;&#123;$index&#125;&#125;  &#123;&#123;value&#125;&#125;</span><br><span class="line">&#123;&#123;/each&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h5 id="标准语法-过滤器"><a href="#标准语法-过滤器" class="headerlink" title="标准语法-过滤器"></a>标准语法-过滤器</h5></li>
+</ul>
+<p>​		过滤器的本质，就是一个 function 处理函数</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;&#123;value | filterName&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​		定义过滤器的基本语法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">template.<span class="property">defaults</span>.<span class="property">imports</span>.<span class="property">filterName</span> = <span class="keyword">function</span>(<span class="params">value</span>)&#123;<span class="comment">/*return处理的结果*/</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​		定义一个格式化时间的过滤器 dateFormat 如下</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;div&gt;注册时间：&#123;&#123;regTime | dateFormat&#125;&#125;&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">template.<span class="property">defaults</span>.<span class="property">imports</span>.<span class="property">dateFormat</span> = <span class="keyword">function</span>(<span class="params">date</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> y = date.<span class="title function_">getFullYear</span>()</span><br><span class="line">    <span class="keyword">var</span> m = date.<span class="title function_">getMonth</span>() + <span class="number">1</span></span><br><span class="line">    <span class="keyword">var</span> d = date.<span class="title function_">getDate</span>()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> y + <span class="string">&#x27;-&#x27;</span> + m + <span class="string">&#x27;-&#x27;</span> + d <span class="comment">// 注意，过滤器最后一定要 return 一个值</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;container&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">    &lt;!-- 定义模板--&gt;</span><br><span class="line">    &lt;!-- 模板的html 结构，必须定义到script 中 --&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/html&quot;</span> <span class="attr">id</span>=<span class="string">&quot;tpl-user&quot;</span>&gt;</span><span class="language-handlebars"><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            </span><span class="template-variable">&#123;&#123;<span class="name">name</span>&#125;&#125;</span><span class="language-xml"> ------ </span><span class="template-variable">&#123;&#123;<span class="name">age</span>&#125;&#125;</span><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            </span><span class="template-variable">&#123;&#123;@<span class="name">sex</span>&#125;&#125;</span><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">        <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            </span><span class="template-variable">&#123;&#123;<span class="name"><span class="built_in">if</span></span> flag === <span class="number">0</span>&#125;&#125;</span><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            flag 的值是 0 </span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            </span><span class="template-tag">&#123;&#123;<span class="keyword">else</span> <span class="keyword">if</span> flag === 1&#125;&#125;</span><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            flag 的值是 1</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            </span><span class="template-tag">&#123;&#123;/<span class="name"><span class="built_in">if</span></span>&#125;&#125;</span><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">        <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            </span><span class="template-variable">&#123;&#123;<span class="name"><span class="built_in">each</span></span> hobby&#125;&#125;</span><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            <span class="tag">&lt;<span class="name">li</span>&gt;</span>索引是：</span><span class="template-variable">&#123;&#123;<span class="name">$index</span>&#125;&#125;</span><span class="language-xml">, 循环项是：</span><span class="template-variable">&#123;&#123;<span class="name">$value</span>&#125;&#125;</span><span class="language-xml"><span class="tag">&lt;/<span class="name">li</span>&gt;</span> </span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">            </span><span class="template-tag">&#123;&#123;/<span class="name"><span class="built_in">each</span></span>&#125;&#125;</span><span class="language-xml"></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">        <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">        <span class="tag">&lt;<span class="name">h3</span>&gt;</span></span><span class="template-variable">&#123;&#123;<span class="name">regTime</span> | dataFormat&#125;&#125;</span><span class="language-xml"><span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="language-xml">    </span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">    </span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        template.<span class="property">defaults</span>.<span class="property">imports</span>.<span class="property">dataFormat</span> = <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            <span class="keyword">var</span> y = data.<span class="title function_">getFullYear</span>();</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            <span class="keyword">var</span> m = data.<span class="title function_">getMonth</span>() + <span class="number">1</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            <span class="keyword">var</span> d = data.<span class="title function_">getDate</span>();</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            <span class="keyword">return</span> y + <span class="string">&#x27;-&#x27;</span> + m + <span class="string">&#x27;-&#x27;</span> + d;   <span class="comment">// 过滤器最后一定要 return 值</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">// 定义需要渲染的数据</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">var</span> data = &#123;<span class="attr">name</span>: <span class="string">&#x27;zs&#x27;</span>, <span class="attr">age</span>: <span class="number">20</span>, <span class="attr">sex</span>: <span class="string">&#x27;&lt;h3&gt;男&lt;/h3&gt;&#x27;</span>, <span class="attr">flag</span>: <span class="number">1</span>, <span class="attr">hobby</span>: [<span class="string">&#x27;吃饭&#x27;</span>, <span class="string">&#x27;睡觉&#x27;</span>, <span class="string">&#x27;写代码&#x27;</span>], <span class="attr">regTime</span>: <span class="keyword">new</span> <span class="title class_">Date</span>() &#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">// 调用 template 函数</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">var</span> htmlStr = <span class="title function_">template</span>(<span class="string">&#x27;tpl-user&#x27;</span>, data);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">// 渲染html 结构</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        $(<span class="string">&#x27;#container&#x27;</span>).<span class="title function_">html</span>(htmlStr);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>art-template模板引擎的使用</category>
+      </categories>
+      <tags>
+        <tag>art-template</tag>
+        <tag>Ajax</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>个人博客搭建Hexo+Next主题</title>
+    <url>/2022/06/08/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAHexo-Next%E4%B8%BB%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="个人博客搭建Hexo-Next主题"><a href="#个人博客搭建Hexo-Next主题" class="headerlink" title="个人博客搭建Hexo+Next主题"></a>个人博客搭建Hexo+Next主题</h1><h3 id="搭建博客需要的工具"><a href="#搭建博客需要的工具" class="headerlink" title="搭建博客需要的工具"></a>搭建博客需要的工具</h3><p><a href="http://hexo.io./zh-cn/docs/">hexo官网</a></p>
+<p><a href="http://nodejs.org/zh-cn/">Node.js官网</a></p>
+<p><a href="https://github.com/">github官网</a></p>
+<p><a href="http://git-scm.com/">git官网</a></p>
+<p>所有必备的应用程序安装完成后，即可使用 npm 安装 Hexo</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h3 id="搭建仓库"><a href="#搭建仓库" class="headerlink" title="搭建仓库"></a>搭建仓库</h3><p>在github上注册账号后，然后开始在github上创建仓库</p>
+<p><img src="/../images/image1.png"></p>
+<p>建立自己的仓库名称，后缀名为.github.io, 勾选下方的 Add a README file ，点击 creat repository</p>
+<p><img src="/../images/image3.png"></p>
+<p>仓库就搭建成功啦！</p>
+<p><img src="/../images/image4.png"></p>
+<h3 id="生成-SSH-Keys"><a href="#生成-SSH-Keys" class="headerlink" title="生成 SSH  Keys"></a>生成 SSH  Keys</h3><p>在任意盘中，选取任意文件夹，在空白处点击 Git Bush here</p>
+<p>检查系统有没有装ssh </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ ssh</span><br></pre></td></tr></table></figure>
+
+<p>生成ssh keys， 默认在 c 盘生成一个 .ssh 文件夹</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;邮件地址&quot;</span><br></pre></td></tr></table></figure>
+
+<p>打开.ssh 文件夹，点击 id_rsa.pub， 复制里面的内容，然后打开github，在setting 中找到 SSH and GPG keys</p>
+<p><img src="/../images/image5.png"></p>
+<p>调试ssh 是否绑定成功</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<h3 id="本地生成博客内容"><a href="#本地生成博客内容" class="headerlink" title="本地生成博客内容"></a>本地生成博客内容</h3><p>在任意盘中建立一个blog的文件夹，在该文件夹的空白处点击Git Bush here，初始化 hexo</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ hexo init</span><br></pre></td></tr></table></figure>
+
+<p>生成本地的 hexo 页面</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ hexo s</span><br></pre></td></tr></table></figure>
+
+<p>启动服务，打开网址 <a href="http://localhost:4000/">http://localhost:4000/</a></p>
+<p><img src="/../images/image6.png"></p>
+<h3 id="安装-Next-主题"><a href="#安装-Next-主题" class="headerlink" title="安装 Next 主题"></a>安装 Next 主题</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git clone https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p>在gotesting\themes文件夹下看到生产的next文件夹</p>
+<p><img src="/../images/image7.png"></p>
+<p>修改gotesting下_config.yml文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">language: en</span><br><span class="line">修改为</span><br><span class="line">language：zh-CN</span><br><span class="line">theme: landscape</span><br><span class="line">修改为</span><br><span class="line">theme: next</span><br></pre></td></tr></table></figure>
+
+<p>启动hexo</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ hexo s</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/image8.png"></p>
+<h3 id="配置-Next-主题"><a href="#配置-Next-主题" class="headerlink" title="配置 Next 主题"></a>配置 Next 主题</h3><p>修改配置文件themes&#x2F;next&#x2F;_config.yml</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改语言</span><br><span class="line">language: zh-CN</span><br><span class="line"></span><br><span class="line">修改主题样式</span><br><span class="line"># Schemes</span><br><span class="line">#scheme: Muse</span><br><span class="line">#scheme: Mist</span><br><span class="line">scheme: Pisces</span><br><span class="line">#scheme: Gemini</span><br><span class="line"></span><br><span class="line">配置菜单</span><br><span class="line">menu:</span><br><span class="line">  home: / || fa fa-home</span><br><span class="line">  tags: /tags/ || fa fa-tags</span><br><span class="line">  categories: /categories/ || fa fa-th</span><br><span class="line">  archives: /archives/ || fa fa-archive</span><br><span class="line">  about: /about/ || fa fa-user</span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar</span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>配置完效果</p>
+<p><img src="/../images/image9.png"></p>
+<p>配置分类、标签和关于</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new page tags</span><br><span class="line">hexo new page categories</span><br><span class="line">hexo new page about</span><br></pre></td></tr></table></figure>
+
+<p>在source目录下分别修改对应文件夹中的index.md文件中的title,并且增加type属性，点击菜单的时候才能正常打开页面，页面的title显示的是自己设置的title</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tags</span><br><span class="line">---</span><br><span class="line">title: 标签</span><br><span class="line">date: 2014-12-22 12:39:04</span><br><span class="line">type: tags</span><br><span class="line">---</span><br><span class="line">categories</span><br><span class="line">---</span><br><span class="line">title: 分类</span><br><span class="line">date: 2014-12-22 12:39:04</span><br><span class="line">type: categories</span><br><span class="line">---</span><br><span class="line">about</span><br><span class="line">categories</span><br><span class="line">---</span><br><span class="line">title: 分类</span><br><span class="line">date: 2014-12-22 12:39:04</span><br><span class="line">type: about</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>在根目录 config.yml 下修改主题的title </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">根目录\_config.yml</span><br><span class="line"># Site</span><br><span class="line">title: Gotesting的博客</span><br><span class="line">subtitle: &lt;br&gt;&lt;font size=&quot;3&quot; color=&quot;red&quot;&gt;坚持自律，越自律越自由&lt;/font&gt;</span><br><span class="line">description:</span><br><span class="line">keywords:</span><br><span class="line">author: Gotesting</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: &#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/image10.png"></p>
+<p>开启本地搜索</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">安装服务</span><br><span class="line">npm install hexo-generator-searchdb</span><br><span class="line"></span><br><span class="line">themes\next\_config.yml</span><br><span class="line"></span><br><span class="line">修改enable 为true</span><br><span class="line">local_search:</span><br><span class="line">  enable: true</span><br><span class="line">  # If auto, trigger search by changing input.</span><br><span class="line">  # If manual, trigger search by pressing enter key or search button.</span><br><span class="line">  trigger: auto</span><br><span class="line">  # Show top n results per article, show all results by setting to -1</span><br><span class="line">  top_n_per_article: 1</span><br><span class="line">  # Unescape html strings to the readable one.</span><br><span class="line">  unescape: false</span><br><span class="line">  # Preload the search data when the page loads.</span><br><span class="line">  preload: false</span><br><span class="line"></span><br><span class="line">修改这里的ture为false</span><br><span class="line">algolia_search:</span><br><span class="line">  enable: false</span><br><span class="line">  hits:</span><br><span class="line">    per_page: 10</span><br><span class="line"></span><br><span class="line">根目录\_config.yml,最后新增</span><br><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  content: true</span><br><span class="line">  format: html</span><br></pre></td></tr></table></figure>
+
+<p>新建页面属性修改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">根目录\_config.yml，修改</span><br><span class="line"># Writing</span><br><span class="line">new_post_name: :year/:month/:title.md # File name of new posts</span><br></pre></td></tr></table></figure>
+
+<p>新建博客并添加标签和分类</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">根目录</span><br><span class="line">hexo new &quot;个人博客搭建Hexo+Next主题&quot; </span><br><span class="line">修改 个人博客搭建Hexo+Next主题.md, 添加标签和分类</span><br><span class="line">---</span><br><span class="line">title: 个人博客搭建Hexo+Next主题</span><br><span class="line">date: 2022-02-13 15:18:54</span><br><span class="line">tags: [Hexo, Next]</span><br><span class="line">categories: [&#x27;博客搭建&#x27;]</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>首页不全显示添加阅读全文</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">next\_config.yml，修改read_more_btn为true</span><br><span class="line"># Read more button</span><br><span class="line"># If true, the read more button will be displayed in excerpt section.</span><br><span class="line">read_more_btn: true</span><br><span class="line"></span><br><span class="line">个人博客搭建Hexo+Next主题.md中合适位置增加 </span><br><span class="line">&lt;!--more--&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/image11.png"></p>
+<p><img src="/../images/image12.png"></p>
+<p>给博客添加fork Github</p>
+<p>进入<a href="https://tholman.com/github-corners/">https://tholman.com/github-corners/</a> ，找到自己喜欢的一种，复制旁边的代码，themes&#x2F;next&#x2F;layout&#x2F;layout.njk目录下，搜索headband, 粘贴复制的代码</p>
+]]></content>
+      <categories>
+        <category>博客搭建</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Next</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>防抖和节流</title>
+    <url>/2022/06/10/%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81/</url>
+    <content><![CDATA[<h3 id="什么是防抖？"><a href="#什么是防抖？" class="headerlink" title="什么是防抖？"></a>什么是防抖？</h3><p><strong>防抖策略</strong>（debounce）是当事件被触发后，延迟 n 秒后再执行回调，如果在这 n 秒内事件又被触发，则重新计时。</p>
+<p><img src="/./images/%E9%98%B2%E6%8A%96.png"></p>
+<span id="more"></span>
+
+<h3 id="防抖的应用场景"><a href="#防抖的应用场景" class="headerlink" title="防抖的应用场景"></a>防抖的应用场景</h3><p>用户在输入框中连续输入一串字符时，可以通过防抖策略，只在输入完后，才执行查询的请求，这样可以有效减少请求次数，节约请求资源；</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">实现输入框的防抖：</span><br><span class="line"><span class="keyword">var</span> timer = <span class="literal">null</span>                    <span class="comment">// 1. 防抖动的 timer</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">function</span> <span class="title function_">debounceSearch</span>(<span class="params">keywords</span>) &#123; <span class="comment">// 2. 定义防抖的函数</span></span><br><span class="line">    timer = <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 发起 JSONP 请求</span></span><br><span class="line">    <span class="title function_">getSuggestList</span>(keywords)</span><br><span class="line">    &#125;, <span class="number">500</span>)</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> $(<span class="string">&#x27;#ipt&#x27;</span>).<span class="title function_">on</span>(<span class="string">&#x27;keyup&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;  <span class="comment">// 3. 在触发 keyup 事件时，立即清空 timer</span></span><br><span class="line">    <span class="built_in">clearTimeout</span>(timer)</span><br><span class="line">    <span class="comment">// ...省略其他代码</span></span><br><span class="line">    <span class="title function_">debounceSearch</span>(keywords)</span><br></pre></td></tr></table></figure>
+
+<h3 id="什么是节流？"><a href="#什么是节流？" class="headerlink" title="什么是节流？"></a>什么是节流？</h3><p><strong>节流策略</strong>（throttle），顾名思义，可以减少一段时间内事件的触发频率</p>
+<p><img src="/./images/%E8%8A%82%E6%B5%81.png"></p>
+<h3 id="节流的应用场景"><a href="#节流的应用场景" class="headerlink" title="节流的应用场景"></a>节流的应用场景</h3><ol>
+<li>鼠标连续不断地触发某事件（如点击），只在单位时间内只触发一次；</li>
+<li>懒加载时要监听计算滚动条的位置，但不必每次滑动都触发，可以降低计算的频率，而不必去浪费 CPU 资源</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">跟随鼠标的天使 -- 传统做法</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;./angel.gif&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;angel&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">var</span> angel = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#angel&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, <span class="keyword">function</span>(<span class="params">e</span>) &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            angel.<span class="property">style</span>.<span class="property">top</span> = e.<span class="property">pageY</span> + <span class="string">&#x27;px&#x27;</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            angel.<span class="property">style</span>.<span class="property">left</span> = e.<span class="property">pageX</span> + <span class="string">&#x27;px&#x27;</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">跟随鼠标的天使 -- 防抖做法</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;./angel.gif&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;angel&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">var</span> angel = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#angel&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">// 预定一个节流阀</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">var</span> timer = <span class="literal">null</span>;  </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, <span class="keyword">function</span>(<span class="params">e</span>) &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            <span class="comment">// 判断节流阀是否为空，如果不为空，则证明距离上次执行间隔不足16毫秒</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            <span class="keyword">if</span>(timer) &#123; <span class="keyword">return</span> &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            timer = <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                angel.<span class="property">style</span>.<span class="property">top</span> = e.<span class="property">pageY</span> + <span class="string">&#x27;px&#x27;</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                angel.<span class="property">style</span>.<span class="property">left</span> = e.<span class="property">pageX</span> + <span class="string">&#x27;px&#x27;</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                <span class="comment">// 当设置了鼠标跟随效果后，清空 timer 节流阀，方便下次开启延时器</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                timer = <span class="literal">null</span>; </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            &#125;, <span class="number">16</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="总结防抖和节流的区别"><a href="#总结防抖和节流的区别" class="headerlink" title="总结防抖和节流的区别"></a>总结防抖和节流的区别</h3><ol>
+<li><p>防抖：如果事件被频繁触发，防抖能保证只有最有一次触发生效！前面 N 多次的触发都会被忽略！</p>
+</li>
+<li><p>节流：如果事件被频繁触发，节流能够减少事件触发的频率，因此，节流是有选择性地执行一部分事件！</p>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>防抖</tag>
+        <tag>节流</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git基础</title>
+    <url>/2022/06/13/git%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h3 id="什么是Git"><a href="#什么是Git" class="headerlink" title="什么是Git"></a>什么是Git</h3><p>​		Git 是一个开源的分布式版本控制系统，是目前世界上最先进、最流行的版本控制系统。可以快速高效地处理从很小到非常大的项目版本管理。<br>​		特点：项目越大越复杂，协同开发者越多，越能体现出 Git 的高性能和高可用性！</p>
+<span id="more"></span>
+
+<h3 id="Git-中的三个区域"><a href="#Git-中的三个区域" class="headerlink" title="Git 中的三个区域"></a>Git 中的三个区域</h3><p>使用 Git 管理的项目，拥有三个区域，分别是<strong>工作区、暂存区、Git 仓库</strong>。<br><img src="/./images/git1.png"></p>
+<p style="color: red;">注意：</p>
+
+<ul>
+<li>工作区的文件被修改了，但还没有放到暂存区，就是<span style="color:red;">已修改</span>状态。</li>
+<li>如果文件已修改并放入暂存区，就属于<span style="color:red;">已暂存</span>状态。</li>
+<li>如果 Git 仓库中保存着特定版本的文件，就属于<span style="color:red;">已提交</span>状态</li>
+</ul>
+<h3 id="安装并配置git"><a href="#安装并配置git" class="headerlink" title="安装并配置git"></a>安装并配置git</h3><ul>
+<li>在window 中下载并安装git</li>
+</ul>
+<p>在开始使用 Git 管理项目的版本之前，需要将它安装到计算机上。可以使用浏览器访问如下的网址，根据自己的操作系统，选择下载对应的 Git 安装包：<a href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></p>
+<p><img src="/./images/git2.png"></p>
+<ul>
+<li><p>如果第一次提交，需要配置全局的用户信息</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git config --<span class="variable language_">global</span> user.<span class="property">name</span> <span class="string">&quot;用户名&quot;</span></span><br><span class="line">git config --<span class="variable language_">global</span> user.<span class="property">password</span> <span class="string">&quot;邮箱地址&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化仓库</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>跟踪新文件, 将文件放入暂存区</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>提交更新</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git commit -m <span class="string">&quot;要描述的信息&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>流程如下：</p>
+<p><img src="/./images/git3.png"></p>
+</li>
+<li><p>链接到远程仓库</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git remote add origin 你新建的仓库地址</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把本地仓库的文件推送到远程仓库 push</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>移除远程仓库</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git remote rm origin</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Git-分支"><a href="#Git-分支" class="headerlink" title="Git 分支"></a>Git 分支</h3><p>在进行多人协作开发的时候，为了防止互相干扰，提高协同开发的体验，建议每个开发者都基于分支进行项目功能的开发，例如：</p>
+<p><img src="/./images/git4.png"></p>
+<ul>
+<li><p>查看分支列表</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git branch</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新分支</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git branch 分支名称</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换分支</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git checkout 分支名称</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分支的快速创建和切换</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git checkout -b 分支名称</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>合并分支</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"># <span class="number">1.</span> 先切换到主分支</span><br><span class="line">git checkout master</span><br><span class="line"># <span class="number">2.</span> 在主分支上合并login分支</span><br><span class="line">git merge login</span><br></pre></td></tr></table></figure>
+
+<p>合并分支时的注意点：</p>
+<p><font style="color:red">假设要把 C 分支的代码合并到 A 分支，则必须先切换到 A分支上，再运行git merge命令，来合并 C 分支！</font></p>
+</li>
+<li><p>删除分支</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git branch -d 分支名称</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将本地分支推送到远程仓库</p>
+<p>如果是第一次将本地分支推送到远程仓库，需要运行如下的命令</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"># -u表示把本地分支和远程分支进行关联，只在第一次推送的时候需要带 -u 参数</span><br><span class="line">git push -u 远程仓库的别名 本地分支的名称:远程分支名称</span><br><span class="line"></span><br><span class="line"># 实际案例</span><br><span class="line">git push -u origin <span class="attr">payment</span>:pay</span><br><span class="line"></span><br><span class="line"># 如果远程分支的名称和本地分支的名称一致</span><br><span class="line">git push -u origin payment</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看远程仓库中所有的分支列表</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git remote show 远程仓库名称</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>跟踪分支</p>
+<p>跟踪分支指的是：从远程仓库中，把远程分支下载到本地仓库中</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"># 从远程仓库中，把对应的远程仓库分支下载到本地仓库，保持本地分支和远程分支名称相同</span><br><span class="line">git checkout 远程分支的名称</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取远程分支的最新的代码</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git pull</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除远程分支</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">git push 远程仓库名称 --<span class="keyword">delete</span> 远程分支名称</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Express + Mysql</title>
+    <url>/2022/06/14/Express/</url>
+    <content><![CDATA[<p> <a href="http://www.expressjs.com.cn/">Express</a>是基于Node.js平台快速开发, 快速、开放、极简的Web开发框架，是专门用来创建Web服务器的。Express的本质是一个npm上的第三方包，提供了快速创建Web服务器的便捷方法。</p>
+<span id="more"></span>
+
+<h3 id="Express初体验"><a href="#Express初体验" class="headerlink" title="Express初体验"></a>Express初体验</h3><ul>
+<li><p>安装Express</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">npm install express</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建服务器，监听客户端需求，并返回内容</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="comment">// 1. 创建 Web 服务器</span></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>()</span><br><span class="line"><span class="comment">// 2. 监听客户端的 GET 和 POST 请求，并向客户端响应具体的内容</span></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/user&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(&#123;<span class="attr">name</span>: <span class="string">&#x27;zs&#x27;</span>, <span class="attr">age</span>: <span class="number">20</span>&#125;)</span><br><span class="line">&#125;)</span><br><span class="line">app.<span class="title function_">post</span>(<span class="string">&#x27;/user&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="string">&#x27;请求成功&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 通过 req.query 可以获取到客户端发送过来的查询参数</span></span><br><span class="line">    res.<span class="title function_">send</span>(req.<span class="property">query</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里的 :id 是一个动态的参数</span></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/user/:id&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// req.params 是动态匹配到的 URL 参数，默认是一个空对象</span></span><br><span class="line">    res.<span class="title function_">send</span>(req.<span class="property">params</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 启动服务器</span></span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">80</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;express server running at http://127.0.0.1&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h3 id="Express-路由"><a href="#Express-路由" class="headerlink" title="Express 路由"></a>Express 路由</h3><p>为了方便对路由进行模块化的管理，Express 不建议将路由直接挂载到 app 上，而是推荐将路由抽离为单独的模块</p>
+<ol>
+<li>创建路由模块对应的 .js 文件</li>
+<li>调用 express.Router() 函数创建路由对象</li>
+<li>向路由对象上挂载具体的路由</li>
+<li>使用 module.exports 向外共享路由对象</li>
+<li>使用 app.use() 函数注册路由模块</li>
+</ol>
+<ul>
+<li><p>创建路由模块</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// route.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="comment">// 创建路由对象</span></span><br><span class="line"><span class="keyword">const</span> router = express.<span class="title class_">Router</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 挂载具体路由</span></span><br><span class="line">router.<span class="title function_">get</span>(<span class="string">&#x27;/user/list&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="string">&#x27;Get user list&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line">router.<span class="title function_">post</span>(<span class="string">&#x27;/user/add&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="string">&#x27;Post user list&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向外到处路由</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = router</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注册路由模块</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line">cosst userRouter = <span class="built_in">require</span>(<span class="string">&#x27;./router&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 app.use()注册路由模块</span></span><br><span class="line">app.<span class="title function_">use</span>(userRouter)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">80</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;express server running at http://127.0.0.1&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h3 id="Express-中间件"><a href="#Express-中间件" class="headerlink" title="Express 中间件"></a>Express 中间件</h3><ul>
+<li>中间件是指流程的中间处理环节</li>
+<li>服务器收到请求后，可先调用中间件进行预处理</li>
+<li>中间件是一个函数，包含  <code>req</code>  <code>res</code>  <code>next</code> 三个参数，<code>next()</code> 参数把流转关系交给下一个中间件或路由</li>
+</ul>
+<p>中间件注意事项:</p>
+<ul>
+<li>在注册路由之前注册中间件（错误级别中间件除外)</li>
+<li>中间件可连续调用多个</li>
+<li>别忘记调用 <code>next()</code> 函数</li>
+<li><code>next()</code> 函数后别写代码</li>
+<li>多个中间件共享 <code>req</code>、 <code>res</code>对象</li>
+</ul>
+<hr>
+<h3 id="全局中间件"><a href="#全局中间件" class="headerlink" title="全局中间件"></a>全局中间件</h3><ul>
+<li>通过<code>app.use()</code>定义的中间件为全局中间件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义第一个全局中间件</span></span><br><span class="line">app.<span class="title function_">use</span>(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;调用了第一个全局中间件&#x27;</span>)</span><br><span class="line">    <span class="title function_">next</span>()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义第二个全局中间件</span></span><br><span class="line">app.<span class="title function_">use</span>(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;调用了第二个全局中间件&#x27;</span>)</span><br><span class="line">    <span class="title function_">next</span>()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(<span class="string">&#x27;/user&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">   	res.<span class="title function_">send</span>(<span class="string">&#x27;ok&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">80</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;http://127.0.0.1&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="局部中间件"><a href="#局部中间件" class="headerlink" title="局部中间件"></a>局部中间件</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义中间件函数</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">mw1</span> = (<span class="params">req, res, next</span>) =&gt; &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;调用了第一个局部生效的中间件&#x27;</span>)</span><br><span class="line">    <span class="title function_">next</span>()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">mw2</span> = (<span class="params">req, res, next</span>) =&gt; &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;调用了第二个局部生效的中间件&#x27;</span>)</span><br><span class="line">    <span class="title function_">next</span>()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义中间件</span></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/hello&#x27;</span>, [mw2, mw1], <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="string">&#x27;ok&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/user&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="string">&#x27;ok1&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">80</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;http://127.0.0.1&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="中间件的分类"><a href="#中间件的分类" class="headerlink" title="中间件的分类"></a>中间件的分类</h3><ol>
+<li>应用级别的中间件</li>
+</ol>
+<ul>
+<li>通过 <code>app.use()</code> 或 <code>app.get()</code> 或 <code>app.post()</code> ，绑定到 <code>app</code> 实例上的中间件</li>
+</ul>
+<ol start="2">
+<li>路由级别的中间件</li>
+</ol>
+<ul>
+<li><p>绑定到 <code>express.Router()</code> 实例上的中间件，叫做路由级别的中间件。用法和应用级别中间件没有区别。应用级别中间件是绑定到 <code>app</code> 实例上，路由级别中间件绑定到 <code>router</code> 实例上。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>()</span><br><span class="line"></span><br><span class="line">router.<span class="title function_">use</span>(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;ok&#x27;</span>)</span><br><span class="line">    <span class="title function_">next</span>()</span><br><span class="line">&#125;)</span><br><span class="line">app.<span class="title function_">use</span>(<span class="string">&#x27;/&#x27;</span>, router)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="3">
+<li>错误级别的中间件</li>
+</ol>
+<ul>
+<li><p>用来捕获整个项目中发生的异常错误，从而防止项目异常崩溃的问题</p>
+</li>
+<li><p>错误级别中间件的处理函数中，必须有 4 个形参，形参顺序从前到后分别是 <code>(err, req, res, next)</code></p>
+</li>
+<li><p>错误级别的中间件必须注册在所有路由之后</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>()</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res,</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 手动抛出一个错误</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;服务器内部发生了错误！&#x27;</span>)</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="string">&#x27;Home Page&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义错误级别的中间件，捕获整个项目的异常错误，从而防止程序的崩溃</span></span><br><span class="line">app.<span class="title function_">use</span>(<span class="function">(<span class="params">err, req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="string">&#x27;Error: &#x27;</span> + err.<span class="property">message</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">80</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;http://127.0.0.1&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="4">
+<li>内置中间件</li>
+</ol>
+<ul>
+<li><p><code>express.static</code> 快速托管静态资源的内置中间件，例如： HTML 文件、图片、CSS 样式等（无兼容性）</p>
+</li>
+<li><p><code>express.json</code> 解析 JSON 格式的请求体数据（有兼容性，仅在 4.16.0+ 版本中可用）</p>
+</li>
+<li><p><code>express.urlencoded</code> 解析 URL-encoded 格式的请求体数据（有兼容性，仅在 4.16.0+ 版本中可用）</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">use</span>(express.<span class="property">json</span>)</span><br><span class="line">app.<span class="title function_">use</span>(express.<span class="title function_">urlencoded</span>( &#123; <span class="attr">extended</span>: <span class="literal">false</span> &#125; ))</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h3 id="CORS-跨域资源共享"><a href="#CORS-跨域资源共享" class="headerlink" title="CORS 跨域资源共享"></a>CORS 跨域资源共享</h3><h5 id="cors-中间件解决跨域"><a href="#cors-中间件解决跨域" class="headerlink" title="cors 中间件解决跨域"></a>cors 中间件解决跨域</h5><ul>
+<li>安装中间件：<code>npm install cors</code></li>
+<li>导入中间件：<code>const cors = require(&#39;cors&#39;)</code></li>
+<li>配置中间件：<code>app.use(cors)</code></li>
+</ul>
+<hr>
+<h3 id="数据库与身份验证"><a href="#数据库与身份验证" class="headerlink" title="数据库与身份验证"></a>数据库与身份验证</h3><h4 id="Node-操作数据库"><a href="#Node-操作数据库" class="headerlink" title="Node 操作数据库"></a>Node 操作数据库</h4><h5 id="配置mysql-模块"><a href="#配置mysql-模块" class="headerlink" title="配置mysql 模块"></a>配置mysql 模块</h5><ol>
+<li>安装mysql 模块</li>
+</ol>
+   <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install mysql</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>建立连接</li>
+</ol>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> mysql = <span class="built_in">require</span>(<span class="string">&#x27;mysql&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = mysql.<span class="title function_">creatPool</span>(&#123;</span><br><span class="line">    <span class="attr">host</span>: <span class="string">&#x27;127.0.0.1&#x27;</span>,</span><br><span class="line">    <span class="attr">user</span>: <span class="string">&#x27;root&#x27;</span>,</span><br><span class="line">    <span class="attr">password</span>: <span class="string">&#x27;admin123&#x27;</span>,</span><br><span class="line">    <span class="attr">database</span>: <span class="string">&#x27;test&#x27;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>测试是否正常工作</li>
+</ol>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">db.<span class="title function_">query</span>(<span class="string">&#x27;select 1&#x27;</span>, <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">     <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">	 <span class="variable language_">console</span>.<span class="title function_">log</span>(results)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h5 id="操作mysql-数据库（增、删、改、查）"><a href="#操作mysql-数据库（增、删、改、查）" class="headerlink" title="操作mysql 数据库（增、删、改、查）"></a>操作mysql 数据库（增、删、改、查）</h5><ol>
+<li>查询数据库</li>
+</ol>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询 users 表中所有的用户数据</span></span><br><span class="line">db.<span class="title function_">query</span>(<span class="string">&#x27;select * from users&#x27;</span>, <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">   <span class="comment">// 查询失败</span></span><br><span class="line">   <span class="keyword">if</span>(err)  <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">   <span class="comment">// 查询成功</span></span><br><span class="line">   <span class="variable language_">console</span>.<span class="title function_">log</span>(results)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>插入数据</li>
+</ol>
+<p>   向 users 表中新增数据， 其中 username 为 Spider-Man，password 为 pcc321。示例代码如下:</p>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 要插入到users 表中的数据</span></span><br><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">username</span>: <span class="title class_">Spider</span>-<span class="title class_">Man</span>, <span class="attr">password</span>: pcc321&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ? 表示占位符</span></span><br><span class="line"><span class="keyword">const</span> sql = <span class="string">&#x27;insert into users set ?&#x27;</span></span><br><span class="line"></span><br><span class="line">db.<span class="title function_">query</span>(sql, user, <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(err)   <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>) &#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;插入数据成功！&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>更新数据</li>
+</ol>
+<p>   更新表数据时，如果数据对象的每个属性和数据表的字段一一对应，则可以通过如下方式快速更新表数据：</p>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 要更新的数据对象</span></span><br><span class="line"><span class="keyword">const</span> sql = &#123;<span class="attr">id</span>: <span class="number">7</span>, <span class="attr">username</span>: <span class="string">&#x27;aaa&#x27;</span>, <span class="attr">password</span>: <span class="string">&#x27;000&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 要执行的sql 语句</span></span><br><span class="line"><span class="keyword">const</span> sql = <span class="string">&#x27;update users set ? where id=?&#x27;</span></span><br><span class="line"></span><br><span class="line">db.<span class="title function_">query</span>(sql, [user, user.<span class="property">id</span>], <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(err)   <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)   &#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;更新数据成功！&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>删除数据</li>
+</ol>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sql = <span class="string">&#x27;delete from users where id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sql, user.<span class="property">id</span>, <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(err)   <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)   &#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;删除数据成功！&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>使用 DELETE 语句，会把真正的把数据从表中删除掉。为了保险起见，推荐使用标记删除的形式，来模拟删除的动作。</p>
+</li>
+<li><p>所谓的标记删除，就是在表中设置类似于 status 这样的状态字段，来标记当前这条数据是否被删除。</p>
+</li>
+<li><p>当用户执行了删除的动作时，我们并没有执行 DELETE 语句把数据删除掉，而是执行了 UPDATE 语句，将这条数据对应的 status 字段标记为删除即可。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 标记语句：使用update语句代替delete语句，只更新数据的状态，并没有正在的删除</span></span><br><span class="line"><span class="keyword">const</span> sql = <span class="string">&#x27;update users set status=1 where id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sql, user.<span class="property">id</span>, <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(err)   <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)   &#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;删除数据成功！&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h3 id="Web-开发模式"><a href="#Web-开发模式" class="headerlink" title="Web 开发模式"></a>Web 开发模式</h3><blockquote>
+<p>目前主流的 Web 开发模式有两种，分别是：</p>
+<ul>
+<li>基于<code>服务端渲染</code>的传统 Web 开发模式</li>
+<li>基于<code>前后端分离</code>的新型 Web 开发模式</li>
+</ul>
+</blockquote>
+<h5 id="服务端渲染"><a href="#服务端渲染" class="headerlink" title="服务端渲染"></a>服务端渲染</h5><p>服务器发送给客户端的 HTML 页面，是在服务器通过字符串的拼接动态生成的。因此客户端不需要使用 Ajax 额外请求页面的数据</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/index.html&#x27;</span>, <span class="function">(<span class="params">res, req</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 要渲染的数据</span></span><br><span class="line">    <span class="keyword">const</span> user = &#123;<span class="attr">name</span>: <span class="string">&#x27;zs&#x27;</span>, <span class="attr">age</span>: <span class="number">20</span>&#125;</span><br><span class="line">    <span class="comment">// 2. 服务器通过字符的拼接，动态生成html内容</span></span><br><span class="line">    <span class="keyword">const</span> html = <span class="string">`&lt;h1&gt;username:<span class="subst">$&#123;user.name&#125;</span>, age:<span class="subst">$&#123;user.age&#125;</span>&lt;/h1&gt;`</span></span><br><span class="line">    <span class="comment">// 3. 把生成好的页面内容响应给客户端</span></span><br><span class="line">    res.<span class="title function_">send</span>(html)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>优点：</p>
+<ul>
+<li><code>前端耗时少</code>。因为服务器端负责动态生成 HTML 内容，浏览器只需要直接渲染页面即可。尤其是移动端，更省电。</li>
+<li><code>有利于SEO</code>。因为服务器端响应的是完整的 HTML 页面内容，所以爬虫更容易爬取获得信息，更有利于 SEO。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><code>占用服务器端资源</code>。即服务器端完成 HTML 页面内容的拼接，如果请求较多，会对服务器造成一定的访问压力。</li>
+<li><code>不利于前后端分离</code>，开发效率低。使用服务器端渲染，则无法进行分工合作，尤其对于前端复杂度高的项目，不利于项目高效开发。</li>
+</ul>
+<h5 id="前后端分离的-Web-开发模式"><a href="#前后端分离的-Web-开发模式" class="headerlink" title="前后端分离的 Web 开发模式"></a>前后端分离的 Web 开发模式</h5><p>前后端分离的概念：前后端分离的开发模式，依赖于 Ajax 技术的广泛应用。简而言之，前后端分离的 Web 开发模式，就是后端只负责提供 API 接口，前端使用 Ajax 调用接口的开发模式。</p>
+<p>优点：</p>
+<ul>
+<li><code>开发体验好</code>。前端专注于 UI 页面的开发，后端专注于api 的开发，且前端有更多的选择性。</li>
+<li><code>用户体验好</code>。Ajax 技术的广泛应用，极大的提高了用户的体验，可以轻松实现页面的局部刷新。</li>
+<li><code>减轻了服务器端的渲染压力</code>。因为页面最终是在每个用户的浏览器中生成的。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><code>不利于 SEO</code>。因为完整的 HTML 页面需要在客户端动态拼接完成，所以爬虫对无法爬取页面的有效信息。（解决方案：利用 Vue、React 等前端框架的 SSR （server side render）技术能够很好的解决 SEO 问题！）</li>
+</ul>
+<h5 id="如何选择"><a href="#如何选择" class="headerlink" title="如何选择"></a>如何选择</h5><ul>
+<li>企业级网站，主要功能是展示，没有复杂交互，且需要良好的 SEO，可考虑服务端渲染</li>
+<li>后台管理项目，交互性强，无需考虑 SEO，可使用前后端分离</li>
+<li>为同时兼顾首页渲染速度和前后端分离开发效率，可采用首屏服务器端渲染+其他页面前后端分离的开发模式</li>
+</ul>
+<hr>
+<h3 id="身份认证"><a href="#身份认证" class="headerlink" title="身份认证"></a>身份认证</h3><blockquote>
+<p>对于服务端渲染和前后端分离这两种开发模式来说，分别有着不同的身份认证方案：</p>
+<ul>
+<li><code>服务端渲染</code>推荐使用<code> Session 认证机制</code></li>
+<li><code>前后端分离</code>推荐使用 <code>JWT 认证机制</code></li>
+</ul>
+</blockquote>
+<h4 id="Session-认证机制"><a href="#Session-认证机制" class="headerlink" title="Session 认证机制"></a>Session 认证机制</h4><h5 id="session-工作原理"><a href="#session-工作原理" class="headerlink" title="session 工作原理"></a>session 工作原理</h5><p><img src="https://brucecai55520.gitee.io/bruceblog/assets/img/Session.c66d5499.png"></p>
+<h5 id="Express-中使用-Session-认证"><a href="#Express-中使用-Session-认证" class="headerlink" title="Express 中使用 Session 认证"></a>Express 中使用 Session 认证</h5><ol>
+<li>安装 express-session 中间件</li>
+</ol>
+   <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install express-session</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>配置中间件</li>
+</ol>
+<p>   express-session 中间件安装成功后，需要通过<code>app.use()</code>来注册 session 中间件，示例代码如下</p>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 导入 session 中间件</span></span><br><span class="line"><span class="keyword">const</span> session = <span class="built_in">require</span>(<span class="string">&#x27;session&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置中间件</span></span><br><span class="line">app.<span class="title function_">use</span>(<span class="title function_">session</span>(&#123;</span><br><span class="line">    <span class="attr">secret</span>: <span class="string">&#x27;keyboard cat&#x27;</span>,   <span class="comment">//secret属性的值可以为任意字符串</span></span><br><span class="line">    <span class="attr">resave</span>: <span class="literal">false</span>,            <span class="comment">// 固定写法</span></span><br><span class="line">    <span class="attr">saveUninitialized</span>: <span class="literal">true</span>   <span class="comment">// 固定写法</span></span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>向 session 中存数据</li>
+</ol>
+<p>   当 express-session 中间件配置成功后，即可通过 <code>req.session </code>来访问和使用 session 对象，从而存储用户的关键信息。</p>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">post</span>(<span class="string">&#x27;./api/login&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 判断用户提交的登录信息是否正确</span></span><br><span class="line">    <span class="keyword">if</span>(req.<span class="property">body</span>.<span class="property">username</span> !== <span class="string">&#x27;admin&#x27;</span> || req.<span class="property">body</span>.<span class="property">password</span> !== <span class="string">&#x27;000000&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> res.<span class="title function_">send</span>(&#123;<span class="attr">status</span>: <span class="number">1</span>, <span class="attr">msg</span>: <span class="string">&#x27;登录失败！&#x27;</span>&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 登录信息正确</span></span><br><span class="line">    req.<span class="property">session</span>.<span class="property">user</span> = req.<span class="property">body</span>   <span class="comment">// 将用户的信息存储到session中</span></span><br><span class="line">    req.<span class="property">session</span>.<span class="property">islogin</span> = <span class="literal">true</span>    <span class="comment">// 将用户的登录状态存储到session中</span></span><br><span class="line">    </span><br><span class="line">    res.<span class="title function_">send</span>(&#123;<span class="attr">status</span>: <span class="number">0</span>, <span class="attr">msg</span>: <span class="string">&#x27;登录成功！&#x27;</span>&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>从 session 取数据</li>
+</ol>
+<p>   可以直接从 <code>req.session</code> 对象上获取之前存储的数据，示例代码如下：</p>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">   <span class="comment">// 获取用户姓名的接口</span></span><br><span class="line">   app.<span class="title function_">get</span>(<span class="string">&#x27;/api/username&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">       <span class="comment">// 判断用户是否登录</span></span><br><span class="line">       <span class="keyword">if</span>(!req.<span class="property">session</span>.<span class="property">islogin</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> res.<span class="title function_">send</span>(&#123;<span class="attr">status</span>: <span class="number">1</span>, <span class="attr">msg</span>: <span class="string">&#x27;fail&#x27;</span>&#125;)</span><br><span class="line">       &#125;</span><br><span class="line">       res.<span class="title function_">send</span>(&#123;</span><br><span class="line">           <span class="attr">status</span>: <span class="number">0</span>,</span><br><span class="line">           <span class="attr">msg</span>: <span class="string">&#x27;success&#x27;</span>,</span><br><span class="line">           <span class="attr">username</span>: req.<span class="property">session</span>.<span class="property">user</span>.<span class="property">username</span></span><br><span class="line">       &#125;)</span><br><span class="line">   &#125;)</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span>  清空 session</span><br><span class="line"></span><br><span class="line">   调用 <span class="string">`req.session.destroy()`</span> 函数，即可清空服务器保存的 session 信息。</span><br><span class="line"></span><br><span class="line">   <span class="string">``</span><span class="string">`javascript</span></span><br><span class="line"><span class="string">   // 退出登录的接口</span></span><br><span class="line"><span class="string">   app.post(&#x27;/api/logout&#x27;, (req, res) =&gt; &#123;</span></span><br><span class="line"><span class="string">       // 清空当前客户端对应的session信息</span></span><br><span class="line"><span class="string">       req.session.destroy()</span></span><br><span class="line"><span class="string">       res.send(&#123;status: 0, msg: &#x27;退出登录成功！&#x27;&#125;)</span></span><br><span class="line"><span class="string">   &#125;)</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="JWT-认证机制"><a href="#JWT-认证机制" class="headerlink" title="JWT 认证机制"></a>JWT 认证机制</h4><blockquote>
+<p>JWT（英文全称：JSON Web Token）是目前最流行的跨域认证解决方案</p>
+</blockquote>
+<blockquote>
+<p>Session 认证机制需要配合 Cookie 才能实现。由于 Cookie 默认不支持跨域访问，所以，当涉及到前端跨域请求后端接口的时候，需要做很多额外的配置，才能实现跨域 Session 认证。</p>
+<ul>
+<li>当前端请求后端接口不存在跨域问题的时候，推荐使用 Session 身份认证机制。</li>
+<li>当前端需要跨域请求后端接口的时候，不推荐使用 Session 身份认证机制，推荐使用 JWT 认证机制。</li>
+</ul>
+</blockquote>
+<h5 id="JWT工作原理"><a href="#JWT工作原理" class="headerlink" title="JWT工作原理"></a>JWT工作原理</h5><p>用户的信息通过 Token 字符串的形式，保存在客户端浏览器中。服务器通过还原 Token 字符串的形式来认证用户的身份。</p>
+<p><img src="https://brucecai55520.gitee.io/bruceblog/assets/img/JWT.6a82c41d.png"></p>
+<h5 id="Express-使用-JWT"><a href="#Express-使用-JWT" class="headerlink" title="Express 使用 JWT"></a>Express 使用 JWT</h5><ol>
+<li>安装 JWT 相关的包</li>
+</ol>
+<blockquote>
+<ul>
+<li><p>jsonwebtoken 用于生成 JWT 字符串</p>
+</li>
+<li><p>express-jwt 用于将 JWT 字符串解析还原成 JSON 对象</p>
+</li>
+</ul>
+</blockquote>
+   <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install jsonwebtoken express-jwt</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>导入 JWT 相关的包</li>
+</ol>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 导入用于生成 JWT 字符的包</span></span><br><span class="line"><span class="keyword">const</span> jwt = <span class="built_in">require</span>(<span class="string">&#x27;jsonwebtoken&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 导入用于将客户端发送过来的JWT字符串，解析还原为JSON对象的包</span></span><br><span class="line"><span class="keyword">const</span> expressJWT = <span class="built_in">require</span>(<span class="string">&#x27;express-jwt&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>定义 secret 密钥</li>
+</ol>
+<blockquote>
+<p>为了保证 JWT 字符串的安全性，防止 JWT 字符串在网络传输过程中被别人破解，我们需要专门定义一个用于加密和解密的 secret 密钥：</p>
+<ul>
+<li>当生成 JWT 字符串的时候，需要使用 secret 密钥对用户的信息进行加密，最终得到加密好的 JWT 字符串</li>
+<li>当把 JWT 字符串解析还原成 JSON 对象的时候，需要使用 secret 密钥进行解密</li>
+</ul>
+</blockquote>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 3. secret 密钥的本质：就是一个字符串</span></span><br><span class="line"><span class="keyword">const</span> secretKey = <span class="string">&#x27;itheima NO1 ^_^&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>在登录成功后生成 JWT 字符串</li>
+</ol>
+<p>   调用 jsonwebtoken 包提供的 <code>sign()</code> 方法，将用户的信息加密成 JWT 字符串，响应给客户端：</p>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 登录接口</span></span><br><span class="line">app.<span class="title function_">post</span>(<span class="string">&#x27;/api/login&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 用户登录失败</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 用户登录成功，生成JWT字符串，通过token 属性响应给客户端</span></span><br><span class="line">    res.<span class="title function_">send</span>(&#123;</span><br><span class="line">        <span class="attr">status</span>: <span class="number">200</span>,</span><br><span class="line">        <span class="attr">msg</span>: <span class="string">&#x27;登录成功!&#x27;</span>,</span><br><span class="line">        <span class="comment">// jwt.sign() 生成 JWT 字符串 参数：用户信息对象、加密密钥、配置对象-token有效期</span></span><br><span class="line">        <span class="attr">token</span>: jwt.<span class="title function_">sign</span>(&#123;&#123;<span class="attr">username</span>: userInfo.<span class="property">username</span>&#125;, secretKey, &#123;<span class="attr">expiresIn</span>:<span class="string">&#x27;10h&#x27;</span>&#125;&#125; </span><br><span class="line">    &#125;) </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>将 JWT 字符串还原为 JSON 对象</li>
+</ol>
+<blockquote>
+<ul>
+<li>客户端每次在访问那些有权限接口的时候，都需要主动通过请求头中的 <code>Authorization </code>字段，将 Token 字符串发送到服务器进行身份认证。</li>
+<li>服务器可以通过 express-jwt 这个中间件，自动将客户端发送过来的 Token 解析还原成 JSON 对象。</li>
+</ul>
+</blockquote>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用app.use()来注册中间件</span></span><br><span class="line"><span class="comment">// expressJWT(&#123;secret: secretKey&#125;) 就是来解析 Token 的中间件</span></span><br><span class="line"><span class="comment">// unless(&#123; path: [/^\/api\//] &#125;) 指定哪些接口无需访问权限</span></span><br><span class="line">app.<span class="title function_">use</span>(<span class="title function_">expressJWT</span>(&#123; <span class="attr">secret</span>: secretKey &#125;).<span class="title function_">unless</span>(&#123; <span class="attr">path</span>: [<span class="regexp">/^\/api\//</span>] &#125;))</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>使用 req.user 获取用户信息</li>
+</ol>
+<blockquote>
+<ul>
+<li>当 express-jwt 这个中间件配置成功之后，即可在那些有权限的接口中，使用<code>req.user</code>对象，来访问从 JWT 字符串中解析出来的用户信息了</li>
+</ul>
+</blockquote>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 这是一个有权限的 API 接口</span></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;./admin/getinfo&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">send</span>(&#123;</span><br><span class="line">        <span class="attr">status</span>: <span class="number">200</span>,</span><br><span class="line">        <span class="attr">msg</span>: <span class="string">&#x27;获取用户信息成功！&#x27;</span></span><br><span class="line">        <span class="attr">data</span>: req.<span class="property">user</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>捕获解析 JWT 失败后产生的错误</li>
+</ol>
+<blockquote>
+<ul>
+<li>当使用 express-jwt 解析 Token 字符串时，如果客户端发送过来的 Token 字符串过期或不合法，会产生一个解析失败的错误，影响项目的正常运行。我们可以通过 Express 的错误中间件，捕获这个错误并进行相关的处理</li>
+</ul>
+</blockquote>
+   <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">use</span>(<span class="function">(<span class="params">err, req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// token 解析失败导致的错误</span></span><br><span class="line">    <span class="keyword">if</span>(err.<span class="property">name</span> === <span class="string">&#x27;UnauthorizedError&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> res.<span class="title function_">send</span>(&#123;<span class="attr">status</span>: <span class="number">401</span>, <span class="attr">msg</span>: <span class="string">&#x27;无效的token&#x27;</span>&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 其他原因导致的错误</span></span><br><span class="line">    res.<span class="title function_">send</span>(&#123;<span class="attr">status</span>: <span class="number">500</span>, <span class="attr">msg</span>: <span class="string">&#x27;未知错误&#x27;</span>&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>Node.js</tag>
+        <tag>Express</tag>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+</search>
